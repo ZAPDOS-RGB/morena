@@ -4,24 +4,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Morena Rosa - Portal do Cliente</title>
+<title>Morena Rosa - Sistema</title>
 
 <style>
 body {
-    font-family: Arial, sans-serif;
+    font-family: Arial;
     margin: 0;
     background: #f4f4f4;
 }
 
-/* TOPO */
 header {
-    background: #000;
+    background: black;
     color: white;
     padding: 15px;
     text-align: center;
 }
 
-/* MENU */
 nav {
     background: #ff4da6;
     padding: 10px;
@@ -33,11 +31,8 @@ nav button {
     padding: 10px;
     border: none;
     cursor: pointer;
-    background: white;
-    border-radius: 5px;
 }
 
-/* SEÇÕES */
 .section {
     display: none;
     padding: 20px;
@@ -47,117 +42,145 @@ nav button {
     display: block;
 }
 
-/* CAIXA */
 .box {
     background: white;
     padding: 20px;
     border-radius: 10px;
-    max-width: 600px;
+    max-width: 700px;
     margin: auto;
 }
 
-/* INPUT */
-input, textarea {
-    width: 90%;
+input, select {
     padding: 10px;
-    margin: 10px;
+    margin: 5px;
+    width: 90%;
 }
 
-/* BOTÃO */
 button.action {
     background: #ff4da6;
     color: white;
     padding: 10px;
+    border: none;
 }
 
-/* CHAT */
-.chat-box {
-    background: #eee;
-    padding: 10px;
-    height: 200px;
-    overflow-y: auto;
-    margin-bottom: 10px;
+ul {
+    text-align: left;
 }
 </style>
-
 </head>
 
 <body>
 
 <header>
-<h1>Portal do Cliente - Morena Rosa</h1>
+<h1>Morena Rosa - Sistema de Pedidos</h1>
 </header>
 
 <nav>
-<button onclick="mostrar('rastreamento')">Rastrear Pedido</button>
+<button onclick="mostrar('cadastro')">Cadastrar Pedido</button>
+<button onclick="mostrar('lista')">Ver Pedidos</button>
+<button onclick="mostrar('rastreio')">Rastrear</button>
 <button onclick="mostrar('chat')">Atendimento</button>
-<button onclick="mostrar('faq')">Dúvidas</button>
 </nav>
 
-<!-- RASTREAMENTO -->
-<div id="rastreamento" class="section active">
+<!-- CADASTRO -->
+<div id="cadastro" class="section active">
+<div class="box">
+<h2>Novo Pedido</h2>
+<input id="nome" placeholder="Nome do cliente">
+<input id="codigo" placeholder="Código do pedido">
+<select id="status">
+<option>Em preparo</option>
+<option>Enviado</option>
+<option>Entregue</option>
+</select>
+<button class="action" onclick="salvar()">Salvar</button>
+</div>
+</div>
+
+<!-- LISTA -->
+<div id="lista" class="section">
+<div class="box">
+<h2>Pedidos</h2>
+<ul id="listaPedidos"></ul>
+</div>
+</div>
+
+<!-- RASTREIO -->
+<div id="rastreio" class="section">
 <div class="box">
 <h2>Rastrear Pedido</h2>
-<input id="codigo" placeholder="Digite o código do pedido">
-<button class="action" onclick="rastrear()">Buscar</button>
-<p id="status"></p>
+<input id="buscarCodigo" placeholder="Digite o código">
+<button class="action" onclick="buscar()">Buscar</button>
+<p id="resultado"></p>
 </div>
 </div>
 
 <!-- CHAT -->
 <div id="chat" class="section">
 <div class="box">
-<h2>Atendimento Automático</h2>
-
-<div class="chat-box" id="chatBox"></div>
-
-<input id="msg" placeholder="Digite sua mensagem">
-<button class="action" onclick="enviar()">Enviar</button>
-
-</div>
-</div>
-
-<!-- FAQ -->
-<div id="faq" class="section">
-<div class="box">
-<h2>Dúvidas Frequentes</h2>
-<p><b>Prazo:</b> 5 a 10 dias úteis</p>
-<p><b>Trocas:</b> Até 7 dias após o recebimento</p>
-<p><b>Pagamento:</b> Cartão, PIX</p>
+<h2>Atendimento</h2>
+<div id="chatBox"></div>
+<input id="msg">
+<button onclick="enviar()">Enviar</button>
 </div>
 </div>
 
 <script>
 
-/* TROCAR TELAS */
-function mostrar(sec) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+let pedidos = [];
+
+/* trocar tela */
+function mostrar(sec){
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
     document.getElementById(sec).classList.add('active');
 }
 
-/* RASTREAMENTO SIMULADO */
-function rastrear() {
-    let status = ["Em separação", "Enviado", "Em transporte", "Entregue"];
-    let random = status[Math.floor(Math.random() * status.length)];
-    document.getElementById("status").innerText = "Status: " + random;
+/* salvar pedido */
+function salvar(){
+    let nome = document.getElementById("nome").value;
+    let codigo = document.getElementById("codigo").value;
+    let status = document.getElementById("status").value;
+
+    pedidos.push({nome, codigo, status});
+    alert("Pedido cadastrado!");
+    atualizarLista();
 }
 
-/* CHAT AUTOMÁTICO */
-function enviar() {
+/* atualizar lista */
+function atualizarLista(){
+    let lista = document.getElementById("listaPedidos");
+    lista.innerHTML = "";
+
+    pedidos.forEach(p=>{
+        lista.innerHTML += `<li>${p.nome} - ${p.codigo} - ${p.status}</li>`;
+    });
+}
+
+/* buscar pedido */
+function buscar(){
+    let codigo = document.getElementById("buscarCodigo").value;
+    let pedido = pedidos.find(p=>p.codigo == codigo);
+
+    if(pedido){
+        document.getElementById("resultado").innerText = pedido.status;
+    } else {
+        document.getElementById("resultado").innerText = "Pedido não encontrado";
+    }
+}
+
+/* chat */
+function enviar(){
     let msg = document.getElementById("msg").value.toLowerCase();
     let chat = document.getElementById("chatBox");
 
-    chat.innerHTML += "<p><b>Você:</b> " + msg + "</p>";
+    chat.innerHTML += "<p><b>Você:</b> "+msg+"</p>";
 
-    let resposta = "Desculpe, não entendi. Tente perguntar sobre prazo, troca ou pedido.";
+    let resp = "Não entendi.";
 
-    if(msg.includes("prazo")) resposta = "O prazo é de 5 a 10 dias úteis.";
-    if(msg.includes("troca")) resposta = "Você pode solicitar troca em até 7 dias.";
-    if(msg.includes("pedido")) resposta = "Use a aba de rastreamento para acompanhar.";
+    if(msg.includes("prazo")) resp = "5 a 10 dias úteis.";
+    if(msg.includes("troca")) resp = "Até 7 dias.";
 
-    chat.innerHTML += "<p><b>Bot:</b> " + resposta + "</p>";
-
-    document.getElementById("msg").value = "";
+    chat.innerHTML += "<p><b>Bot:</b> "+resp+"</p>";
 }
 
 </script>
