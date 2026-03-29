@@ -1,0 +1,167 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morena Rosa - Portal do Cliente</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f4f4;
+}
+
+/* TOPO */
+header {
+    background: #000;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+/* MENU */
+nav {
+    background: #ff4da6;
+    padding: 10px;
+    text-align: center;
+}
+
+nav button {
+    margin: 5px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    background: white;
+    border-radius: 5px;
+}
+
+/* SEÇÕES */
+.section {
+    display: none;
+    padding: 20px;
+}
+
+.active {
+    display: block;
+}
+
+/* CAIXA */
+.box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: auto;
+}
+
+/* INPUT */
+input, textarea {
+    width: 90%;
+    padding: 10px;
+    margin: 10px;
+}
+
+/* BOTÃO */
+button.action {
+    background: #ff4da6;
+    color: white;
+    padding: 10px;
+}
+
+/* CHAT */
+.chat-box {
+    background: #eee;
+    padding: 10px;
+    height: 200px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h1>Portal do Cliente - Morena Rosa</h1>
+</header>
+
+<nav>
+<button onclick="mostrar('rastreamento')">Rastrear Pedido</button>
+<button onclick="mostrar('chat')">Atendimento</button>
+<button onclick="mostrar('faq')">Dúvidas</button>
+</nav>
+
+<!-- RASTREAMENTO -->
+<div id="rastreamento" class="section active">
+<div class="box">
+<h2>Rastrear Pedido</h2>
+<input id="codigo" placeholder="Digite o código do pedido">
+<button class="action" onclick="rastrear()">Buscar</button>
+<p id="status"></p>
+</div>
+</div>
+
+<!-- CHAT -->
+<div id="chat" class="section">
+<div class="box">
+<h2>Atendimento Automático</h2>
+
+<div class="chat-box" id="chatBox"></div>
+
+<input id="msg" placeholder="Digite sua mensagem">
+<button class="action" onclick="enviar()">Enviar</button>
+
+</div>
+</div>
+
+<!-- FAQ -->
+<div id="faq" class="section">
+<div class="box">
+<h2>Dúvidas Frequentes</h2>
+<p><b>Prazo:</b> 5 a 10 dias úteis</p>
+<p><b>Trocas:</b> Até 7 dias após o recebimento</p>
+<p><b>Pagamento:</b> Cartão, PIX</p>
+</div>
+</div>
+
+<script>
+
+/* TROCAR TELAS */
+function mostrar(sec) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(sec).classList.add('active');
+}
+
+/* RASTREAMENTO SIMULADO */
+function rastrear() {
+    let status = ["Em separação", "Enviado", "Em transporte", "Entregue"];
+    let random = status[Math.floor(Math.random() * status.length)];
+    document.getElementById("status").innerText = "Status: " + random;
+}
+
+/* CHAT AUTOMÁTICO */
+function enviar() {
+    let msg = document.getElementById("msg").value.toLowerCase();
+    let chat = document.getElementById("chatBox");
+
+    chat.innerHTML += "<p><b>Você:</b> " + msg + "</p>";
+
+    let resposta = "Desculpe, não entendi. Tente perguntar sobre prazo, troca ou pedido.";
+
+    if(msg.includes("prazo")) resposta = "O prazo é de 5 a 10 dias úteis.";
+    if(msg.includes("troca")) resposta = "Você pode solicitar troca em até 7 dias.";
+    if(msg.includes("pedido")) resposta = "Use a aba de rastreamento para acompanhar.";
+
+    chat.innerHTML += "<p><b>Bot:</b> " + resposta + "</p>";
+
+    document.getElementById("msg").value = "";
+}
+
+</script>
+
+</body>
+</html>
+```
